@@ -96,8 +96,8 @@ return [
     */
 
     'options' => [
-        'application' => env('APP_NAME', 'Laravel'),
-        'repository' => '',
+        'application' => env('APP_NAME', 'COVID Tracker'),
+        'repository' => 'git@github.com:rarg27/covid-tracker.git',
     ],
 
     /*
