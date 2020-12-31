@@ -6,11 +6,9 @@ use App\Models\Conductor;
 use App\Models\Resident;
 use App\Models\Terminal;
 use App\Models\TransportationLog;
-use App\Models\Util;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {

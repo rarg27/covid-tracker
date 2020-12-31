@@ -6,7 +6,7 @@ use App\Models\Conductor;
 use App\Models\Driver;
 use App\Models\Resident;
 use App\Models\TransportationLog;
-use App\Models\Util;
+use App\Util;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
