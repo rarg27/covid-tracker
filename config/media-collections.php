@@ -9,5 +9,5 @@ return [
     | This option controls if media are processed automatically or will be called manually
     |
     */
-    'auto_process' => false,
+    'auto_process' => true,
 ];

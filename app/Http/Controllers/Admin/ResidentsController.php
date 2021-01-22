@@ -8,17 +8,31 @@ use App\Http\Requests\Admin\Resident\DestroyResident;
 use App\Http\Requests\Admin\Resident\IndexResident;
 use App\Http\Requests\Admin\Resident\StoreResident;
 use App\Http\Requests\Admin\Resident\UpdateResident;
+use App\Mail\QRCodeEmail;
 use App\Models\Resident;
 use Brackets\AdminListing\Facades\AdminListing;
+use Brackets\AdminUI\WysiwygMedia;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
+use Intervention\Image\Facades\Image;
+use Spatie\ImageOptimizer\OptimizerChainFactory;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class ResidentsController extends Controller
 {
@@ -32,16 +46,41 @@ class ResidentsController extends Controller
     public function index(IndexResident $request)
     {
         // create and AdminListing instance for a specific model and
-        $data = AdminListing::create(Resident::class)->processRequestAndGet(
+        $data = AdminListing::create(Resident::class)
+            ->processRequestAndGet(
             // pass the request with params
             $request,
 
             // set columns to query
-            ['id', 'name', 'address', 'birth_date', 'contact_number'],
+            ['id', 'name', 'address', 'birth_date', 'contact_number', 'status', 'id_type', 'id_value'],
 
             // set columns to searchIn
-            ['id', 'name', 'address', 'contact_number']
+            ['id', 'name', 'address', 'contact_number', 'id_value'],
+
+            function (Builder $query) use ($request) {
+                if ($request->has('status')) {
+                    if ($request->input('status') != "*") {
+                        $query->where('status', intval($request->input('status')));
+                    }
+                }
+            }
         );
+
+        /** @var LengthAwarePaginator|Collection $data */
+        $data->each(function (Resident $resident) {
+            switch ($resident->status) {
+                case 0:
+                    $resident->status = "Pending";
+                    break;
+                case 1:
+                    $resident->status = "Accepted";
+                    break;
+                default:
+                    $resident->status = "Rejected";
+            }
+
+            $resident->id_type = trans('admin.resident.id_type.'.$resident->id_type);
+        });
 
         if ($request->ajax()) {
             if ($request->has('bulk')) {
@@ -69,6 +108,57 @@ class ResidentsController extends Controller
     }
 
     /**
+     * Show the form for resident application.
+     *
+     * @throws AuthorizationException
+     * @return Factory|View
+     */
+    public function apply()
+    {
+        return view('admin.resident-apply.create');
+    }
+
+    public function accept(Resident $resident)
+    {
+        $resident->status = 1;
+
+        $resident->save();
+
+        Mail::to('galang.renzalbert@gmail.com')
+            ->send(new QRCodeEmail($resident->id.'|'.str_replace(' ', '-', $resident->name)));
+
+        if (\request()->ajax()) {
+            return [
+                'redirect' => url('admin/residents'),
+                'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
+            ];
+        }
+
+        return redirect('admin/residents');
+    }
+
+    public function applySuccess()
+    {
+        return view('admin.resident-apply.success');
+    }
+
+    public function reject(Resident $resident)
+    {
+        $resident->status = 2;
+
+        $resident->save();
+
+        if (\request()->ajax()) {
+            return [
+                'redirect' => url('admin/residents'),
+                'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
+            ];
+        }
+
+        return redirect('admin/residents');
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param StoreResident $request
@@ -79,21 +169,51 @@ class ResidentsController extends Controller
         // Sanitize input
         $sanitized = $request->getSanitized();
 
+        if (empty($request->input('id_picture'))) {
+            throw new ConflictHttpException('ID Picture is required.');
+        }
+
+        if (
+        Resident::where('contact_number', $sanitized['contact_number'])
+            ->exists()
+        ) {
+            throw new ConflictHttpException('Contact number is already associated with another user.');
+        }
+
+        if (
+            Resident::where('email', $sanitized['email'])
+                ->exists()
+        ) {
+            throw new ConflictHttpException('Email is already associated with another user.');
+        }
+
+        if (
+            Resident::where('id_type', $sanitized['id_type'])
+                ->where('id_value', $sanitized['id_value'])
+                ->exists()
+        ) {
+            throw new ConflictHttpException('The ID is already associated with another user.');
+        }
+
         // Store the Resident
         $resident = Resident::create($sanitized);
 
-        if ($picture = $request->get('picture')) {
-            if ($picture != NULL) {
-                $resident->addMediaFromBase64($picture)
-                    ->toMediaCollection('picture');
-            }
-        }
+        $resident->processMedia(collect(request()->only($resident->getMediaCollections()->map->getName()->toArray())));
+
+//        if ($picture = $request->get('picture')) {
+//            if ($picture != NULL) {
+//                $resident->addMediaFromBase64($picture)
+//                    ->toMediaCollection('picture');
+//            }
+//        }
 
         if ($request->ajax()) {
-            return ['redirect' => url('admin/residents'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
+//            return ['redirect' => url('admin/residents'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
+            return ['redirect' => url('residents/apply/success'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/residents/'.$resident->id.'/qrcode');
+//        return redirect('admin/residents/'.$resident->id.'/qrcode');
+        return redirect('residents/apply/success');
     }
 
     /**
@@ -207,5 +327,32 @@ class ResidentsController extends Controller
         return view('admin.resident.qrcode', [
             'resident' => $resident,
         ]);
+    }
+
+    public function idPicture(Resident $resident)
+    {
+        $this->authorize('admin.resident.qrcode', $resident);
+
+        \Log::debug($resident);
+
+        return view('admin.resident.idpicture', [
+            'resident' => $resident,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @throws AuthorizationException
+     * @return JsonResponse
+     */
+    public function upload(Request $request): JsonResponse
+    {
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('', ['disk' => 'uploads']);
+
+            return response()->json(['path' => $path], 200);
+        }
+
+        return response()->json(trans('brackets/media::media.file.not_provided'), 422);
     }
 }

@@ -15,7 +15,8 @@ class StoreResident extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.resident.create');
+//        return Gate::allows('admin.resident.create');
+        return true;
     }
 
     /**
@@ -29,8 +30,10 @@ class StoreResident extends FormRequest
             'name' => ['required', 'string'],
             'address' => ['required', 'string'],
             'birth_date' => ['required', 'date'],
+            'email' => ['required', 'string'],
             'contact_number' => ['nullable', 'string'],
-            
+            'id_type' => ['required', 'string'],
+            'id_value' => ['required', 'string'],
         ];
     }
 

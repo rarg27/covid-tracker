@@ -9,20 +9,23 @@ use Brackets\Media\HasMedia\ProcessMediaTrait;
 use Illuminate\Database\Eloquent\Model;
 use Nicolaslopezj\Searchable\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
-use Spatie\MediaLibrary\Models\Media;
 
 class Resident extends Model implements HasMedia
 {
     use FormattedTimestamp,
-        HasMediaTrait,
+        HasMediaCollectionsTrait,
+        ProcessMediaTrait,
         SearchableTrait;
 
     protected $fillable = [
         'name',
         'address',
         'birth_date',
-        'contact_number'
+        'contact_number',
+        'email',
+        'status',
+        'id_type',
+        'id_value'
     ];
 
     protected $searchable = [
@@ -33,8 +36,7 @@ class Resident extends Model implements HasMedia
 
     protected $appends = [
         'resource_url',
-        'picture',
-        'picture_thumb'
+        'id_picture'
     ];
 
     public function getResourceUrlAttribute()
@@ -42,27 +44,15 @@ class Resident extends Model implements HasMedia
         return url('/admin/residents/'.$this->getKey());
     }
 
-    public function getPictureAttribute()
+    public function getIdPictureAttribute()
     {
-        return optional($this->getFirstMedia('picture'))->getUrl();
+        return optional($this->getFirstMedia('id_picture'))->getUrl();
     }
 
-    public function getPictureThumbAttribute()
+    public function registerMediaCollections() : void
     {
-        return optional($this->getFirstMedia('picture'))->getUrl('thumb');
-    }
-
-    public function registerMediaCollections()
-    {
-        $this->addMediaCollection('picture')
+        $this->addMediaCollection('id_picture')
+            ->accepts('image/*')
             ->singleFile();
-    }
-
-    public function registerMediaConversions(Media $media = null)
-    {
-        $this->addMediaConversion('thumb')
-            ->width(160)
-            ->height(120)
-            ->sharpen(10);
     }
 }

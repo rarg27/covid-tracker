@@ -11,6 +11,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class ConductorController extends Controller
 {
@@ -46,6 +47,11 @@ class ConductorController extends Controller
         $conductor = $request->user();
 
         $resident = Resident::findOrFail(Arr::get($data, 'id'));
+
+        if ($resident->status != 1) {
+            throw new ConflictHttpException('Resident\'s status is not applicable.');
+        }
+
         $driver = Driver::findOrFail(Arr::get($data, 'driver_id'));
 
         $log = TransportationLog::create([

@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'login_redirect' => '/admin',
+    'login_redirect' => '/admin/transportation-logs',
 
     /*
     |--------------------------------------------------------------------------
@@ -92,5 +92,5 @@ return [
     |
     */
 
-    'use_routes' => true,
+    'use_routes' => false,
 ];

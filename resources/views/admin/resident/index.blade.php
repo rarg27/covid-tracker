@@ -1,4 +1,4 @@
-@extends('brackets/admin-ui::admin.layout.default')
+@extends('admin.layout.default')
 
 @section('title', trans('admin.resident.actions.index'))
 
@@ -14,12 +14,12 @@
                 <div class="card">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> {{ trans('admin.resident.actions.index') }}
-                        <a class="btn btn-primary btn-spinner btn-sm pull-right m-b-0" href="{{ url('admin/residents/create') }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.resident.actions.create') }}</a>
+{{--                        <a class="btn btn-primary btn-spinner btn-sm pull-right m-b-0" href="{{ url('admin/residents/create') }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.resident.actions.create') }}</a>--}}
                     </div>
                     <div class="card-body" v-cloak>
                         <div class="card-block">
                             <form @submit.prevent="">
-                                <div class="row justify-content-md-between">
+                                <div class="row justify-content-start">
                                     <div class="col col-lg-7 col-xl-5 form-group">
                                         <div class="input-group">
                                             <input class="form-control" placeholder="{{ trans('brackets/admin-ui::admin.placeholder.search') }}" v-model="search" @keyup.enter="filter('search', $event.target.value)" />
@@ -27,6 +27,14 @@
                                                 <button type="button" class="btn btn-primary" @click="filter('search', search)"><i class="fa fa-search"></i>&nbsp; {{ trans('brackets/admin-ui::admin.btn.search') }}</button>
                                             </span>
                                         </div>
+                                    </div>
+                                    <div class="col-sm-auto form-group ">
+                                        <select class="form-control" v-model="statusSelect">
+                                            <option value="*">All</option>
+                                            <option value="0">Pending</option>
+                                            <option value="1">Accepted</option>
+                                            <option value="2">Rejected</option>
+                                        </select>
                                     </div>
                                     <div class="col-sm-auto form-group ">
                                         <select class="form-control" v-model="pagination.state.per_page">
@@ -54,7 +62,11 @@
                                         <th is='sortable' :column="'address'">{{ trans('admin.resident.columns.address') }}</th>
                                         <th is='sortable' :column="'birth_date'">{{ trans('admin.resident.columns.birth_date') }}</th>
                                         <th is='sortable' :column="'contact_number'">{{ trans('admin.resident.columns.contact_number') }}</th>
-                                        <th :column="'contact_number'">QR Code</th>
+                                        <th is='sortable' :column="'status'">{{ trans('admin.resident.columns.status') }}</th>
+                                        <th is='sortable' :column="'id_type'">{{ trans('admin.resident.columns.id_type') }}</th>
+                                        <th is='sortable' :column="'id_value'">{{ trans('admin.resident.columns.id_value') }}</th>
+                                        <th>ID Picture</th>
+                                        <th>QR Code</th>
 
                                         <th></th>
                                     </tr>
@@ -78,29 +90,48 @@
                                             </label>
                                         </td>
 
-                                    <td>@{{ item.id }}</td>
+                                        <td>@{{ item.id }}</td>
                                         <td>@{{ item.name }}</td>
                                         <td>@{{ item.address }}</td>
                                         <td>@{{ item.birth_date | date }}</td>
                                         <td>@{{ item.contact_number }}</td>
+                                        <td>@{{ item.status }}</td>
+                                        <td>@{{ item.id_type }}</td>
+                                        <td>@{{ item.id_value }}</td>
+
                                         <td>
                                             <div class="row no-gutters">
                                                 <div class="col-auto">
-                                                    <a class="btn btn-sm btn-spinner btn-info" :href="item.resource_url + '/qrcode'" title="Show" role="button"><i class="fa fa-qrcode"></i></a>
+                                                    <a class="btn btn-sm btn-info" :href="item.resource_url + '/idpicture'" target="_blank" title="Show" role="button"><i class="fa fa-id-card-o"></i></a>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="row no-gutters">
+                                                <div class="col-auto">
+                                                    <a class="btn btn-sm btn-info" :href="item.resource_url + '/qrcode'" target="_blank" title="Show" role="button"><i class="fa fa-qrcode"></i></a>
                                                 </div>
                                             </div>
                                         </td>
                                         
                                         <td>
                                             <div class="row no-gutters">
-                                                <div class="col-auto">
-                                                    <a class="btn btn-sm btn-spinner btn-info" :href="item.resource_url + '/edit'" title="{{ trans('brackets/admin-ui::admin.btn.edit') }}" role="button"><i class="fa fa-edit"></i></a>
-                                                </div>
+                                                <form class="col" v-if="item.status === 'Pending'" @submit.prevent="acceptResident(item)">
+                                                    <button type="submit" class="btn btn-sm btn-success" title="{{ trans('admin.resident.btn.accept') }}"><i class="fa fa-check"></i></button>
+                                                </form>
+                                                <form class="col" v-if="item.status === 'Pending'" @submit.prevent="rejectResident(item)">
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="{{ trans('admin.resident.btn.reject') }}"><i class="fa fa-ban"></i></button>
+                                                </form>
+{{--                                                <div class="col-auto">--}}
+{{--                                                    <a class="btn btn-sm btn-spinner btn-info" :href="item.resource_url + '/edit'" title="{{ trans('brackets/admin-ui::admin.btn.edit') }}" role="button"><i class="fa fa-edit"></i></a>--}}
+{{--                                                </div>--}}
                                                 <form class="col" @submit.prevent="deleteItem(item.resource_url)">
                                                     <button type="submit" class="btn btn-sm btn-danger" title="{{ trans('brackets/admin-ui::admin.btn.delete') }}"><i class="fa fa-trash-o"></i></button>
                                                 </form>
                                             </div>
                                         </td>
+
                                     </tr>
                                 </tbody>
                             </table>
@@ -118,7 +149,7 @@
                                 <i class="icon-magnifier"></i>
                                 <h3>{{ trans('brackets/admin-ui::admin.index.no_items') }}</h3>
                                 <p>{{ trans('brackets/admin-ui::admin.index.try_changing_items') }}</p>
-                                <a class="btn btn-primary btn-spinner" href="{{ url('admin/residents/create') }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.resident.actions.create') }}</a>
+{{--                                <a class="btn btn-primary btn-spinner" href="{{ url('admin/residents/create') }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.resident.actions.create') }}</a>--}}
                             </div>
                         </div>
                     </div>

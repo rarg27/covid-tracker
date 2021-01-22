@@ -36,6 +36,7 @@ class FillPermissionsForResident extends Migration
             'admin.resident.delete',
             'admin.resident.bulk-delete',
             'admin.resident.qrcode',
+            'admin.resident.idpicture',
         ]);
 
         //Add New permissions

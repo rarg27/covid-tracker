@@ -102,7 +102,7 @@ class Handler extends ExceptionHandler
     private function errorResponse($message, $code)
     {
         return response()->json([
-            'status'=>'Error',
+            'status'=> 'Error',
             'message' => $message,
         ], $code);
     }

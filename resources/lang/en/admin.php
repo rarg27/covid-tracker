@@ -91,6 +91,21 @@ return [
             'index' => 'Residents',
             'create' => 'New Resident',
             'edit' => 'Edit :name',
+            'apply' => 'Apply for Covid Tracking'
+        ],
+
+        'id_type' => [
+            'sss' => 'SSS',
+            'umid' => 'UMID',
+            'philhealth' => 'PhilHealth',
+            'drivers_license' => 'Driver\'s License',
+            'voters' => 'Voter\'s ID',
+            'senior_citizen' => 'Senior Citizen ID'
+        ],
+
+        'btn' => [
+            'accept' => 'Accept',
+            'reject' => 'Reject'
         ],
 
         'columns' => [
@@ -98,8 +113,12 @@ return [
             'name' => 'Name',
             'address' => 'Address',
             'birth_date' => 'Birth date',
+            'email' => 'Email Address',
             'contact_number' => 'Contact number',
-            
+            'status' => 'Status',
+            'id_type' => 'ID Type',
+            'id_value' => 'ID',
+            'id_picture' => 'ID Picture'
         ],
     ],
 

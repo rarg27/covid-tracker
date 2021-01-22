@@ -5,4 +5,5 @@ import './terminal';
 import './conductor';
 import './transportation-log';
 import './resident';
+import './resident-apply';
 import './driver';
