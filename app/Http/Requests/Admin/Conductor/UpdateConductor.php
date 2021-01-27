@@ -26,10 +26,10 @@ class UpdateConductor extends FormRequest
     public function rules(): array
     {
         return [
-            'terminal' => ['required'],
+//            'terminal' => ['required'],
             'name' => ['sometimes', 'string'],
             'username' => ['sometimes', Rule::unique('conductors', 'username')->ignore($this->conductor->getKey(), $this->conductor->getKeyName()), 'string'],
-            'password' => ['sometimes', 'confirmed', 'min:7', 'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9]).*$/', 'string'],
+            'password' => ['sometimes', 'confirmed', 'min:7', 'string'],
             
         ];
     }

@@ -27,7 +27,7 @@ class StoreDriver extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'terminal' => ['required']
+//            'terminal' => ['required']
         ];
     }
 

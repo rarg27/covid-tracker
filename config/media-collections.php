@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'public_disk' => 'media',
-    'private_disk' => 'media_private',
+    'public_disk' => 'public',
+    'private_disk' => 'local',
 
     /*
     |

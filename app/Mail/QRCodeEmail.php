@@ -2,8 +2,7 @@
 
 namespace App\Mail;
 
-require_once base_path().'/phpqrcode/qrlib.php';
-
+use App\Models\Resident;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -12,16 +11,19 @@ class QRCodeEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private string $qrCode;
+    private Resident $resident;
+
+    private string $pdf;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(string $qrCode)
+    public function __construct(Resident $resident, string $pdf)
     {
-        $this->qrCode = $qrCode;
+        $this->resident = $resident;
+        $this->pdf = $pdf;
     }
 
     /**
@@ -31,19 +33,11 @@ class QRCodeEmail extends Mailable
      */
     public function build()
     {
-        $filename = sprintf('tmp_qrcode_%s.png', strval(now()->timestamp));
-
-        \QRcode::png($this->qrCode, $filename, QR_ECLEVEL_H, 8, 2);
-
-        $data = file_get_contents($filename);
-
-        unlink($filename);
-
         return $this->subject('Brgy. Bagbag Covid Tracker | QR Code')
             ->view('admin.mail.qrcode')
-            ->with('qrCode', $data)
-            ->attachData($data, 'qr_code.png', [
-                'mime' => 'image/png',
+            ->with('resident', $this->resident)
+            ->attachData($this->pdf, $this->resident->name.'.pdf', [
+                'mime' => 'application/pdf',
             ]);
     }
 }

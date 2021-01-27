@@ -26,7 +26,7 @@ class StoreConductor extends FormRequest
     public function rules(): array
     {
         return [
-            'terminal' => ['required'],
+//            'terminal' => ['required'],
             'name' => ['required', 'string'],
             'username' => ['required', Rule::unique('conductors', 'username'), 'string'],
             'password' => ['required', 'confirmed', 'min:7', 'string'],

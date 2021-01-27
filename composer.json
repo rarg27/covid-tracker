@@ -18,7 +18,8 @@
         "laravel/tinker": "^2.5",
         "lorisleiva/laravel-deployer": "^0.3.5",
         "nicolaslopezj/searchable": "^1.13.0",
-        "orangehill/iseed": "^3.0"
+        "orangehill/iseed": "^3.0",
+        "spipu/html2pdf": "^5.2"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.8",

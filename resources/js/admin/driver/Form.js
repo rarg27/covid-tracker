@@ -8,7 +8,7 @@ Vue.component('driver-form', {
     data: function() {
         return {
             form: {
-                terminal:  '' ,
+                // terminal:  '' ,
                 name:  '' ,
                 
             }

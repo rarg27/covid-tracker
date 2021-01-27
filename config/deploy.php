@@ -61,6 +61,7 @@ return [
             'artisan:view:clear',
             'artisan:config:cache',
             'artisan:migrate',
+            'artisan:queue:restart'
         ],
         
         // Deployment is done and live
@@ -119,6 +120,7 @@ return [
             'forwardAgent' => true,
             'multiplexing' => false,
             'git_tty' => false,
+            'keep_releases' => 1,
             'sshOptions' => [
                 'UserKnownHostsFile' => '/dev/null',
                 'StrictHostKeyChecking' => 'no',

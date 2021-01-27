@@ -27,7 +27,7 @@ class UpdateDriver extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string'],
-            'terminal' => ['required']
+//            'terminal' => ['required']
         ];
     }
 

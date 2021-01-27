@@ -8,7 +8,7 @@ Vue.component('conductor-form', {
     data: function() {
         return {
             form: {
-                terminal:  '' ,
+                // terminal:  '' ,
                 name:  '' ,
                 username:  '' ,
                 password:  '' ,

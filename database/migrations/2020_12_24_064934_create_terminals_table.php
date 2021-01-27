@@ -20,11 +20,9 @@ class CreateTerminalsTable extends Migration
             $table->timestamps();
         });
 
-        if (in_array(config('app.env'), ['local', 'development', 'testing'])) {
-            \Artisan::call('db:seed', [
-                '--class' => \Database\Seeders\TerminalsTableSeeder::class
-            ]);
-        }
+        \Artisan::call('db:seed', [
+            '--class' => \Database\Seeders\TerminalsTableSeeder::class
+        ]);
     }
 
     /**

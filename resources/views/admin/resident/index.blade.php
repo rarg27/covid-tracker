@@ -66,7 +66,7 @@
                                         <th is='sortable' :column="'id_type'">{{ trans('admin.resident.columns.id_type') }}</th>
                                         <th is='sortable' :column="'id_value'">{{ trans('admin.resident.columns.id_value') }}</th>
                                         <th>ID Picture</th>
-                                        <th>QR Code</th>
+{{--                                        <th>QR Code</th>--}}
 
                                         <th></th>
                                     </tr>
@@ -107,13 +107,13 @@
                                             </div>
                                         </td>
 
-                                        <td>
-                                            <div class="row no-gutters">
-                                                <div class="col-auto">
-                                                    <a class="btn btn-sm btn-info" :href="item.resource_url + '/qrcode'" target="_blank" title="Show" role="button"><i class="fa fa-qrcode"></i></a>
-                                                </div>
-                                            </div>
-                                        </td>
+{{--                                        <td>--}}
+{{--                                            <div class="row no-gutters">--}}
+{{--                                                <div class="col-auto">--}}
+{{--                                                    <a class="btn btn-sm btn-info" :href="item.resource_url + '/qrcode'" target="_blank" title="Show" role="button"><i class="fa fa-qrcode"></i></a>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </td>--}}
                                         
                                         <td>
                                             <div class="row no-gutters">

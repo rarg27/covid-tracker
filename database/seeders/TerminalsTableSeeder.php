@@ -22,8 +22,8 @@ class TerminalsTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'name' => 'Terminal 1',
-                'location' => '2295 Lapu-Lapu Street, Baclaran',
+                'name' => 'KGSP TODA',
+                'location' => 'Kingspoint Subdivision, King Alexander Street, Barangay Bagbag, Quezon City',
                 'created_at' => '2020-12-24 07:02:57',
                 'updated_at' => '2020-12-24 07:02:57',
             ),

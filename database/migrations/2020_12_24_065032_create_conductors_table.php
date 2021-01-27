@@ -25,11 +25,9 @@ class CreateConductorsTable extends Migration
             $table->foreign('terminal_id')->references('id')->on('terminals');
         });
 
-        if (in_array(config('app.env'), ['local', 'development', 'testing'])) {
-            \Artisan::call('db:seed', [
-                '--class' => \Database\Seeders\ConductorsTableSeeder::class
-            ]);
-        }
+        \Artisan::call('db:seed', [
+            '--class' => \Database\Seeders\ConductorsTableSeeder::class
+        ]);
     }
 
     /**

@@ -93,7 +93,8 @@ class DriversController extends Controller
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
-        $sanitized['terminal_id'] = $request->getTerminalId();
+//        $sanitized['terminal_id'] = $request->getTerminalId();
+        $sanitized['terminal_id'] = 1;
 
         // Store the Driver
         $driver = Driver::create($sanitized);
@@ -147,7 +148,8 @@ class DriversController extends Controller
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
-        $sanitized['terminal_id'] = $request->getTerminalId();
+//        $sanitized['terminal_id'] = $request->getTerminalId();
+        $sanitized['terminal_id'] = 1;
 
         // Update changed values Driver
         $driver->update($sanitized);

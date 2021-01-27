@@ -92,7 +92,8 @@ class ConductorsController extends Controller
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
-        $sanitized['terminal_id'] = $request->getTerminalId();
+//        $sanitized['terminal_id'] = $request->getTerminalId();
+        $sanitized['terminal_id'] = 1;
         \Log::debug($sanitized);
 
         // Store the Conductor
@@ -148,7 +149,8 @@ class ConductorsController extends Controller
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
-        $sanitized['terminal_id'] = $request->getTerminalId();
+//        $sanitized['terminal_id'] = $request->getTerminalId();
+        $sanitized['terminal_id'] = 1;
 
         // Update changed values Conductor
         $conductor->update($sanitized);

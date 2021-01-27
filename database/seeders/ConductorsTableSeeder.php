@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class ConductorsTableSeeder extends Seeder
 {
@@ -23,9 +24,9 @@ class ConductorsTableSeeder extends Seeder
             array (
                 'id' => 1,
                 'terminal_id' => 1,
-                'name' => 'Juan Dela Cruz',
-                'username' => 'juan',
-                'password' => '$2y$10$cVZMudsno5QT0DcCVy9dP.ZuLcpt0ndcy2VYj0p4eLfc8lMqMoqAS',
+                'name' => 'Conductor',
+                'username' => 'conductor',
+                'password' => Hash::make('brgybagbag'),
                 'created_at' => '2020-12-24 07:03:22',
                 'updated_at' => '2020-12-24 07:03:22',
             ),

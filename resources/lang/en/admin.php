@@ -91,7 +91,8 @@ return [
             'index' => 'Residents',
             'create' => 'New Resident',
             'edit' => 'Edit :name',
-            'apply' => 'Apply for Covid Tracking'
+            'apply' => 'Apply for Covid Tracking',
+            'success' => 'Thank you!'
         ],
 
         'id_type' => [

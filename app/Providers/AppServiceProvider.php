@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (in_array(config('app.env'), ['local', 'testing', 'development'])) {
+        if (in_array(config('app.env'), ['local', 'development'])) {
             DB::listen(function ($query) {
                 $bindings = [];
                 foreach ($query->bindings as $value) {

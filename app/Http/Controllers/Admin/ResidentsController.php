@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\Resident\DestroyResident;
 use App\Http\Requests\Admin\Resident\IndexResident;
 use App\Http\Requests\Admin\Resident\StoreResident;
 use App\Http\Requests\Admin\Resident\UpdateResident;
+use App\Jobs\GenerateQrCodeID;
 use App\Mail\QRCodeEmail;
 use App\Models\Resident;
 use Brackets\AdminListing\Facades\AdminListing;
@@ -124,8 +125,7 @@ class ResidentsController extends Controller
 
         $resident->save();
 
-        Mail::to('galang.renzalbert@gmail.com')
-            ->send(new QRCodeEmail($resident->id.'|'.str_replace(' ', '-', $resident->name)));
+        dispatch(new GenerateQrCodeID($resident));
 
         if (\request()->ajax()) {
             return [
@@ -139,7 +139,7 @@ class ResidentsController extends Controller
 
     public function applySuccess()
     {
-        return view('admin.resident-apply.success');
+        return view('admin.resident-apply.success', ['name' => \request('name')]);
     }
 
     public function reject(Resident $resident)
@@ -207,13 +207,15 @@ class ResidentsController extends Controller
 //            }
 //        }
 
+        $redirect = 'residents/apply/success?name='.explode(' ', trim($resident->name))[0];
+
         if ($request->ajax()) {
 //            return ['redirect' => url('admin/residents'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
-            return ['redirect' => url('residents/apply/success'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
+            return ['redirect' => url($redirect), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
 //        return redirect('admin/residents/'.$resident->id.'/qrcode');
-        return redirect('residents/apply/success');
+        return redirect($redirect);
     }
 
     /**

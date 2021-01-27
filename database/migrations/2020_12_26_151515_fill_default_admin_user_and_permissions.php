@@ -41,7 +41,7 @@ class FillDefaultAdminUserAndPermissions extends Migration
     /**
      * @var string
      */
-    protected $password = 'password';
+    protected $password = 'brgyb@gb@g';
 
     /**
      * FillDefaultAdminUserAndPermissions constructor.
@@ -104,9 +104,9 @@ class FillDefaultAdminUserAndPermissions extends Migration
         //Add new users
         $this->users = [
             [
-                'first_name' => 'Administrator',
-                'last_name' => 'Administrator',
-                'email' => 'admin@email.com',
+                'first_name' => 'Barangay',
+                'last_name' => 'Bagbag',
+                'email' => 'admin@brgybagbag.com',
                 'password' => Hash::make($this->password),
                 'remember_token' => null,
                 'created_at' => Carbon::now(),
@@ -193,7 +193,7 @@ class FillDefaultAdminUserAndPermissions extends Migration
                 if ($userItem === null) {
                     $userId = DB::table($this->userTable)->insertGetId($user);
 
-                    AdminUser::find($userId)->addMedia(storage_path() . '/images/avatar.png')
+                    AdminUser::find($userId)->addMedia(base_path() . '/public/images/brgy-bagbag.png')
                         ->preservingOriginal()
                         ->toMediaCollection('avatar', 'media');
 

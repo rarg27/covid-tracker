@@ -16,7 +16,7 @@
                             <form class="form-horizontal" role="form" method="POST" action="{{ url('/admin/login') }}" novalidate>
                                 {{ csrf_field() }}
                                 <div class="auth-header">
-                                    <img class="mx-auto d-block" src="{{ asset('images/brgy-bagbag.jpg') }}" width="200" height="200" />
+                                    <img class="mx-auto d-block" src="{{ asset('images/brgy-bagbag.png') }}" width="200" height="200" />
 {{--                                    <h1 class="auth-title">{{ trans('brackets/admin-auth::admin.login.title') }}</h1>--}}
 {{--                                    <p class="auth-subtitle">{{ trans('brackets/admin-auth::admin.login.sign_in_text') }}</p>--}}
                                 </div>
