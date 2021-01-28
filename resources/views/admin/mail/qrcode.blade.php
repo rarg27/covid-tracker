@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Brgy. Bagbag Covid Tracker | QR Code</title>
+    <title>KGSP Toda Terminal Brgy. Bagbag, QC COVID-19 Tracker | QR Code</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -17,7 +17,7 @@
             <br />
             <br />
             <p>Best Regards,</p>
-            <p>Brgy. Bagbag</p>
+            <p>KGSP Toda Terminal Brgy. Bagbag</p>
         </div>
     </div>
 </div>

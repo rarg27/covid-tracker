@@ -33,7 +33,7 @@ class QRCodeEmail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Brgy. Bagbag Covid Tracker | QR Code')
+        return $this->subject('KGSP Toda Terminal Brgy. Bagbag, QC COVID-19 Tracker | QR Code')
             ->view('admin.mail.qrcode')
             ->with('resident', $this->resident)
             ->attachData($this->pdf, $this->resident->name.'.pdf', [
